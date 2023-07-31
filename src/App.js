@@ -5,7 +5,7 @@ import Forecast from "../src/components/forecast/Forecast";
 import { WEATHER_API_URL, WEATHER_API_KEY } from "./api";
 import "./App.css";
 import { Accordion, AccordionItem, AccordionItemButton, AccordionItemHeading, AccordionItemPanel } from 'react-accessible-accordion';
-import NewsGrid from "./components/News/NewsGrid";
+// import NewsGrid from "./components/News/NewsGrid";
 
 
 const WEEK_DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
@@ -196,7 +196,7 @@ function App() {
       </div>
       <div className="news-section">
         <h3 className="news-heading">News</h3>
-        <NewsGrid news={news} />
+        {/* <NewsGrid news={news} /> */}
       </div>
     </div>
   );
