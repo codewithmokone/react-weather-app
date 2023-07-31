@@ -2,28 +2,18 @@ import { useState, useEffect } from "react";
 import Search from "../src/components/search/Search";
 import CurrentWeather from "../src/components/current-weather/CurrentWeather";
 import Forecast from "../src/components/forecast/Forecast";
-import { WEATHER_API_URL, WEATHER_API_KEY } from "./api";
+import { WEATHER_API_URL, WEATHER_API_KEY, NEWS_API_KEY } from "./api";
 import "./App.css";
-import { Accordion, AccordionItem, AccordionItemButton, AccordionItemHeading, AccordionItemPanel } from 'react-accessible-accordion';
-// import NewsGrid from "./components/News/NewsGrid";
+import NewsGrid from "./components/News/NewsGrid";
 
-
-const WEEK_DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
 function App() {
 
-  const dayInAWeek = new Date().getDay();
-  const forecastDays = WEEK_DAYS.slice(dayInAWeek, WEEK_DAYS.legnth).concat(WEEK_DAYS.slice(0, dayInAWeek));
-
-  const [currentWeather, setCurrentWeather] = useState(null);
-  const [currentForecast, setCurrentForecast] = useState(null);
-  const [currentCity, setCurrentCity] = useState();
-  const [searchedWeather, setSearchedWeather] = useState();
-  const [searchedForecast, setSearchedForecast] = useState();
-  const [searchedCity, setSearchedCity] = useState();
+  const [weather, setWeather] = useState(null);
+  const [forecast, setForecast] = useState(null);
+  const [city, setCity] = useState();
   const [news, setNews] = useState([]);
-  const [searchedNews, setSearchedNews] = useState();
-  const [show, setShow] = useState(false)
+
 
 
   // Handles search functionality
@@ -42,14 +32,20 @@ function App() {
         const weatherResponse = await response[0].json();
         const forcastResponse = await response[1].json();
 
-        setSearchedWeather({ city: searchData.label, ...weatherResponse });
-        setSearchedForecast({ city: searchData.label, ...forcastResponse });
-        setSearchedCity({ city: searchData.label, ...weatherResponse })
+        setWeather({ city: searchData.label, ...weatherResponse });
+        setForecast({ city: searchData.label, ...forcastResponse });
+        setCity({ city: searchData.label, ...weatherResponse })
       })
       .catch(console.log)
-    setShow(false);
+
+    fetch(`https://newsapi.org/v2/everything?q=${city}&apiKey=${NEWS_API_KEY}`)
+    .then(res => res.json())
+    .then(data => setNews(data.articles))
+
   };
 
+
+  // Getting current location weather and news
   useEffect(() => {
 
     const fetchData = async () => {
@@ -73,14 +69,14 @@ function App() {
           .then(res => res.json())
           .then(result => {
             let localWeather = result;
-            setCurrentWeather(localWeather);
-            setCurrentCity(localWeather.name);
+            setWeather(localWeather);
+            setCity(localWeather.name);
           });
         await fetch(`${WEATHER_API_URL}/forecast?lat=${localLat}&lon=${localLong}&appid=${WEATHER_API_KEY}`)
           .then(res => res.json())
           .then(result => {
             let localForecast = result;
-            setCurrentForecast(localForecast);
+            setForecast(localForecast);
           });
       } catch (err) {
         console.log(err)
@@ -89,114 +85,32 @@ function App() {
 
     fetchData();
 
+    fetch(`https://newsapi.org/v2/everything?q=${city}&apiKey=${NEWS_API_KEY}`)
+    .then(res => res.json())
+    .then(data => setNews(data.articles))
+
   }, [])
 
-  useEffect(() => {
 
-    fetch(`https://newsapi.org/v2/everything?q=${currentCity}&apiKey=b31433a3fbcc4089a3d505d1ebcec18a`)
-      .then(res => res.json())
-      .then(data => setNews(data.articles))
-  }, [])
-
-  useEffect(() => {
-
-    fetch(`https://newsapi.org/v2/everything?q=${searchedCity}&apiKey=b31433a3fbcc4089a3d505d1ebcec18a`)
-      .then(res => res.json())
-      .then(data => setSearchedNews(data.articles))
-  }, [])
-
+  console.log("Weather", weather)
 
   return (
     <div className="container">
       <div className="search-section">
         <Search onSearchChange={handleOnSearchChange} />
       </div>
-
-      {/* Shows current location info */}
-      {currentWeather && <div className="weather local">
-        <div className="top">
-          <div>
-            <p className="city">{currentWeather.name}</p>
-            <p className="weather-description">{currentWeather.weather[0].description}</p>
-          </div>
-          <img src={`icons/${currentWeather.weather[0].icon}.png`} alt="" className="weather-icon" />
-        </div>
-        <div className="bottom">
-          <p className="temperature">{Math.round((currentWeather.main.temp) - 275)}°C</p>
-          <div className="details">
-            <div className="parameter-row">
-              <span className="parameter-label">Details</span>
-            </div>
-            <div className="parameter-row">
-              <span className="parameter-label">Feels like </span>
-              <span className="parameter-value">{currentWeather.main.feels_like}°C</span>
-            </div>
-            <div className="parameter-row">
-              <span className="parameter-label">Wind </span>
-              <span className="parameter-value">{currentWeather.wind.speed}</span>
-            </div>
-            <div className="parameter-row">
-              <span className="parameter-label">Humidity </span>
-              <span className="parameter-value">{currentWeather.main.humidity}</span>
-            </div>
-            <div className="parameter-row">
-              <span className="parameter-label">Pressure </span>
-              <span className="parameter-value">{currentWeather.main.pressure}</span>
-            </div>
-          </div>
-        </div>
+      {weather && <div>
+        <CurrentWeather data={weather} />
       </div>}
       <div className="local-forecast">
         <h3 className="local-title">Forecast</h3>
-        {currentForecast && <Accordion allowZeroExpanded>
-          {currentForecast.list.splice(0, 7).map((item, index) => (
-            <AccordionItem key={index}>
-              <AccordionItemHeading>
-                <AccordionItemButton>
-                  <div className="daily-item">
-                    <img alt="weather" className="icon-small" src={`icons/${item.weather[0].icon}.png`} />
-                    <label className="day">{forecastDays[index]}</label>
-                    <label className="day">{item.weather[0].description}</label>
-                    <label className="day">{Math.round(item.main.temp_min)}°C / {Math.round(item.main.temp_max)}°C</label>
-                    <label className="day"></label>
-                  </div>
-                </AccordionItemButton>
-              </AccordionItemHeading>
-              <AccordionItemPanel>
-                <div className="daily-details-grid">
-                  <div className="daily-details-grid">
-                    <label>Pressure:</label>
-                    <label>{item.main.pressure}</label>
-                  </div>
-                  <div className="daily-details-grid-item">
-                    <label>Humidity:</label>
-                    <label>{item.main.humidity}</label>
-                  </div>
-                  <div className="daily-details-grid-item">
-                    <label>Clouds:</label>
-                    <label>{item.clouds.all}%</label>
-                  </div>
-                  <div className="daily-details-grid-item">
-                    <label>Wind speed:</label>
-                    <label>{item.wind.speed} m/s</label>
-                  </div>
-                  <div className="daily-details-grid-item">
-                    <label>Sea level:</label>
-                    <label>{item.main.sea_level}m</label>
-                  </div>
-                  <div className="daily-details-grid-item">
-                    <label>Feels like:</label>
-                    <label>{item.main.feels_like}°C</label>
-                  </div>
-                </div>
-              </AccordionItemPanel>
-            </AccordionItem>
-          ))}
-        </Accordion>}
+        {forecast && <div>
+          <Forecast data={forecast} />
+        </div>}
       </div>
       <div className="news-section">
         <h3 className="news-heading">News</h3>
-        {/* <NewsGrid news={news} /> */}
+        <NewsGrid news={news} />
       </div>
     </div>
   );
