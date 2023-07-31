@@ -34,14 +34,16 @@ function App() {
 
         setWeather({ city: searchData.label, ...weatherResponse });
         setForecast({ city: searchData.label, ...forcastResponse });
-        setCity({ city: searchData.label, ...weatherResponse })
+        setCity({ city: searchData.label, ...weatherResponse });
       })
       .catch(console.log)
 
     fetch(`https://newsapi.org/v2/everything?q=${city}&apiKey=${NEWS_API_KEY}`)
-    .then(res => res.json())
-    .then(data => setNews(data.articles))
-
+      .then(res => res.json())
+      .then(data => {
+        let news = data.articles;
+        setNews(news);
+      })
   };
 
 
@@ -64,6 +66,7 @@ function App() {
         const position = await getPosition();
         localLat = position.coords.latitude;
         localLong = position.coords.longitude;
+
         // Use location data to construct API URL and fetch weather information
         await fetch(`${WEATHER_API_URL}/weather/?lat=${localLat}&lon=${localLong}&APPID=${WEATHER_API_KEY}`)
           .then(res => res.json())
@@ -72,11 +75,19 @@ function App() {
             setWeather(localWeather);
             setCity(localWeather.name);
           });
+
         await fetch(`${WEATHER_API_URL}/forecast?lat=${localLat}&lon=${localLong}&appid=${WEATHER_API_KEY}`)
           .then(res => res.json())
           .then(result => {
             let localForecast = result;
             setForecast(localForecast);
+          });
+
+        await fetch(`https://newsapi.org/v2/everything?q=${city}&apiKey=${NEWS_API_KEY}`)
+          .then(res => res.json())
+          .then(data =>{
+            let news = data.articles
+            setNews(news)
           });
       } catch (err) {
         console.log(err)
@@ -85,14 +96,8 @@ function App() {
 
     fetchData();
 
-    fetch(`https://newsapi.org/v2/everything?q=${city}&apiKey=${NEWS_API_KEY}`)
-    .then(res => res.json())
-    .then(data => setNews(data.articles))
-
   }, [])
 
-
-  console.log("Weather", weather)
 
   return (
     <div className="container">
@@ -110,7 +115,7 @@ function App() {
       </div>
       <div className="news-section">
         <h3 className="news-heading">News</h3>
-        <NewsGrid news={news} />
+        {news && <NewsGrid news={news} />}
       </div>
     </div>
   );
