@@ -111,24 +111,6 @@ function App() {
       <div className="search-section">
         <Search onSearchChange={handleOnSearchChange} />
       </div>
-      <div>
-        {/* {handleOnSearchChange.length > 0 ? (
-        <>
-          <CurrentWeather data={searchedWeather} />
-          <Forecast data={searchedForecast} />
-          <NewsGrid items={searchedNews} />
-        </>
-        ) 
-        :
-        (
-          <>
-            <CurrentWeather data={currentWeather} />
-            <Forecast data={currentForecast} />
-            <NewsGrid items={news} />
-          </>
-        )} */}
-
-      </div>
 
       {/* Shows current location info */}
       {currentWeather && <div className="weather local">
