@@ -1,5 +1,6 @@
 import React from 'react';
 import '../News/News.css';
+import { Box, Hidden } from '@mui/material';
 
 
 const NewsItem = ({ item }) => {
@@ -10,28 +11,36 @@ const NewsItem = ({ item }) => {
     const formatDate = date.replace('T', '')
     const formatTime = formatDate.replace('Z', '')
     return (
-        <div className="main-article">
+        <Box className="main-article">
             <a href={item.url} className='article'>
-                <div className="article-image">
+                <Box
+                    sx={{width: { xs: '15%', md:'20%' }, height: { xs: "100%", md:'50%' }, borderWidth:2, borderColor:'green'}} className="article-image">
                     <img src={item.urlToImage} alt={item.title} className="newsImage" />
-                </div>
-                <div className="article-content">
-                    <div className="article-source">
-                        <img src="" alt="" />
+                </Box>
+                <Box
+                    sx={{
+                        width: { xs: '60%' },
+                        height: { xs: '100%' }
+                    }}
+                    className="article-content">
+                    <Box className="article-source">
                         <span>{item.source.name}</span>
-                    </div>
-                    <div className="article-title">
+                    </Box>
+                    <Box className="article-title">
                         <h4>{item.title}</h4>
-                    </div>
-                    <div className="article-description">
-                        <p>{item.description}</p>
-                    </div>
-                    <div className="article-details">
+                    </Box>
+                    <Hidden xsDown>
+                        <Box className="article-description">
+                            <p>{item.description}</p>
+                        </Box>
+                    </Hidden>
+
+                    <Box className="article-details">
                         <small><b>Published At:</b>{formatTime}</small>
-                    </div>
-                </div>
+                    </Box>
+                </Box>
             </a>
-        </div>
+        </Box>
 
     )
 }

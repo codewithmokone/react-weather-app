@@ -5,6 +5,7 @@ import Forecast from "../src/components/forecast/Forecast";
 import { WEATHER_API_URL, WEATHER_API_KEY, NEWS_API_KEY } from "./api";
 import "./App.css";
 import NewsGrid from "./components/News/NewsGrid";
+import { Box } from "@mui/material";
 
 
 function App() {
@@ -85,7 +86,7 @@ function App() {
 
         await fetch(`https://newsapi.org/v2/everything?q=${city}&apiKey=${NEWS_API_KEY}`)
           .then(res => res.json())
-          .then(data =>{
+          .then(data => {
             let news = data.articles
             setNews(news)
           });
@@ -100,24 +101,40 @@ function App() {
 
 
   return (
-    <div className="container">
-      <div className="search-section">
+    <Box
+      sx={{
+        width: { xs: 400, sm: 500, md: 600 }
+      }}
+      className="container">
+      <Box
+        sx={{
+          width: { xs: 400, sm: 600, md: 700 }
+        }}
+        className="search-section">
         <Search onSearchChange={handleOnSearchChange} />
-      </div>
-      {weather && <div>
+      </Box>
+      {weather && <Box>
         <CurrentWeather data={weather} />
-      </div>}
-      <div className="local-forecast">
+      </Box>}
+      <Box
+        sx={{
+          width: { xs: 450, sm: 600, md: 700 }
+        }}
+        className="local-forecast"
+      >
         <h3 className="local-title">Forecast</h3>
-        {forecast && <div>
-          <Forecast data={forecast} />
-        </div>}
-      </div>
-      <div className="news-section">
+        {forecast && <Box> <Forecast data={forecast} /></Box>}
+      </Box>
+      <Box
+        sx={{
+          width: { xs: 450, sm: 600, md: 700 },
+          fontSize:{xs:10}
+        }}
+        className="news-section">
         <h3 className="news-heading">News</h3>
         {news && <NewsGrid news={news} />}
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 }
 

@@ -19,7 +19,7 @@ const Forecast = ({ data }) => {
 
     return (
         <>
-            <label className="title">Forecast</label>
+            {/* <label className="title">Forecast</label> */}
             <Accordion allowZeroExpanded>
                 {data.list.splice(0, 7).map((item, index) => (
                     <AccordionItem key={index}>
@@ -30,7 +30,6 @@ const Forecast = ({ data }) => {
                                     <label className="day">{forecastDays[index]}</label>
                                     <label className="day">{item.weather[0].description}</label>
                                     <label className="day">{Math.round(item.main.temp_min)}°C / {Math.round(item.main.temp_max)}°C</label>
-                                    <label className="day"></label>
                                 </div>
                             </AccordionItemButton>
                         </AccordionItemHeading>
