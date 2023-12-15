@@ -15,7 +15,7 @@ const NewsItem = ({ item }) => {
             <a href={item.url} className='article'>
                 <Box
                     sx={{width: { xs: '10%',sm:'20%', md:'20%' }, height: { xs: "100%", md:'50%' }, borderWidth:2, borderColor:'green'}} className="article-image">
-                    <img className='w-[100%] h-full' src={item.urlToImage} alt={item.title} className="newsImage" />
+                    <img src={item.urlToImage} alt={item.title} className="newsImage" />
                 </Box>
                 <Box
                     sx={{
