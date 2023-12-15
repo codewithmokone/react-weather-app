@@ -1,6 +1,6 @@
 import React from 'react';
 import '../News/News.css';
-import { Box, Hidden } from '@mui/material';
+import { Box, Hidden, Paper } from '@mui/material';
 
 
 const NewsItem = ({ item }) => {
@@ -14,13 +14,14 @@ const NewsItem = ({ item }) => {
         <Box className="main-article">
             <a href={item.url} className='article'>
                 <Box
-                    sx={{width: { xs: '15%', md:'20%' }, height: { xs: "100%", md:'50%' }, borderWidth:2, borderColor:'green'}} className="article-image">
-                    <img src={item.urlToImage} alt={item.title} className="newsImage" />
+                    sx={{width: { xs: '10%',sm:'20%', md:'20%' }, height: { xs: "100%", md:'50%' }, borderWidth:2, borderColor:'green'}} className="article-image">
+                    <img className='w-[100%] h-full' src={item.urlToImage} alt={item.title} className="newsImage" />
                 </Box>
                 <Box
                     sx={{
-                        width: { xs: '60%' },
-                        height: { xs: '100%' }
+                        width: { xs: '80%',sm:'60%',md:'60%' },
+                        height: { xs: '100%' },
+                        marginLeft:{xs:0,sm:3,md: 4}
                     }}
                     className="article-content">
                     <Box className="article-source">
